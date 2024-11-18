@@ -1,44 +1,50 @@
 package com.Proyecto.Services;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.Proyecto.domain.Usuario;
+import com.Proyecto.repositorios.UsuarioRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
-    private List<Usuario> repositorio = new ArrayList<>();
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public List<Usuario> obtenerTodos() {
-        return repositorio;
+        return usuarioRepository.findAll();
     }
 
     public Usuario obtenerPorId(long id) {
-        for (Usuario usuario : repositorio)
-            if (usuario.getDni() == id)
-                return usuario;
-        return null; // Lanza excepcion si no encuentra el usuario
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+        if (usuario.isPresent()) {
+            return usuario.get();
+        } else {
+            throw new UsuarioNotFoundException("Usuario con id " + id + " no encontrado");
+        }
     }
 
     public Usuario añadir(Usuario usuario) {
-        if (repositorio.contains(usuario))
-            return null; // Muestra el usuario ya existente
-        repositorio.add(usuario);
-        return usuario; // Devolverá nada, o boolean, etc.
+        if (usuarioRepository.existsById(usuario.getDni())) {
+            throw new UsuarioAlreadyExistsException("El usuario con el DNI " + usuario.getDni() + " ya existe.");
+        }
+        return usuarioRepository.save(usuario);
     }
 
     public Usuario editar(Usuario usuario) {
-        int pos = repositorio.indexOf(usuario);
-        if (pos == -1)
-            return null; // Lanza excepcion si no encuentra el usuario
-        repositorio.set(pos, usuario); // Si lo encuentra, lo sustituye
-        return usuario;
+        if (!usuarioRepository.existsById(usuario.getDni())) {
+            throw new UsuarioNotFoundException("Usuario con id " + usuario.getDni() + " no encontrado");
+        }
+        return usuarioRepository.save(usuario);
     }
 
     public void borrar(Long id) {
-        Usuario usuario = this.obtenerPorId(id);
-        if (usuario != null) {
-            repositorio.remove(usuario); // Devolverá boolean
+        if (!usuarioRepository.existsById(id)) {
+            throw new UsuarioNotFoundException("Usuario con id " + id + " no encontrado");
         }
+        usuarioRepository.deleteById(id);
     }
 }

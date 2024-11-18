@@ -2,6 +2,7 @@ package com.Proyecto.domain;
 
 import java.time.LocalDateTime;
 import org.springframework.data.annotation.Id;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
@@ -12,14 +13,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Venta {
+public class UsuarioLibro {
     @Id
     private Long id;
-    private LocalDateTime fecha;
-    private float precioTotal;
+    private LocalDateTime fechaTransaccion;
+    private String tipoTransaccion; 
 
     @ManyToOne
     private Usuario usuario;
+
     @ManyToOne
     private Libros libro;
 }

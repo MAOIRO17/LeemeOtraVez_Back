@@ -1,8 +1,8 @@
 package com.Proyecto.domain;
 
 import org.springframework.data.annotation.Id;
-
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,12 +11,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Libros{
+public class Libros {
     @Id
     private Long id;
     private String titulo;
-    private  String autor;
+    private String autor;
     private String categoria;
     private String idioma;
     private float precio;
+
+    @ManyToOne
+    private Compra compra;
 }
