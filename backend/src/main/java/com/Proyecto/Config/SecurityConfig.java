@@ -22,52 +22,53 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+        @Bean
+        public AuthenticationManager authenticationManager(
+                        AuthenticationConfiguration authenticationConfiguration)
+                        throws Exception {
+                return authenticationConfiguration.getAuthenticationManager();
+        }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public UserDetailsService users(PasswordEncoder passwordEncoder) {
-        UserDetails user = User.builder()
-                .username("user1")
-                .password(passwordEncoder.encode("1234"))
-                .roles("USER")
-                .build();
-        UserDetails admin = User.builder()
-                .username("admin1")
-                .password(passwordEncoder.encode("1234"))
-                .roles("USER", "ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(user, admin);
-    }
+        @Bean
+        public UserDetailsService users(PasswordEncoder passwordEncoder) {
+                UserDetails user = User.builder()
+                                .username("user1")
+                                .password(passwordEncoder.encode("1234"))
+                                .roles("USER")
+                                .build();
+                UserDetails admin = User.builder()
+                                .username("admin1")
+                                .password(passwordEncoder.encode("1234"))
+                                .roles("USER", "ADMIN")
+                                .build();
+                return new InMemoryUserDetailsManager(user, admin);
+        }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.headers(headersConfigurer -> headersConfigurer
-                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
-        http.authorizeHttpRequests(
-                auth -> auth
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/new/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/edit/**", "/delete/**").hasRole("ADMIN")
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/h2-console/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .formLogin(formLogin -> formLogin
-                        .defaultSuccessUrl("/", true)
-                        .permitAll())
-                .logout(logout -> logout
-                        .permitAll())
-                .httpBasic(Customizer.withDefaults()); // import org.springframework.security.config
-        http.exceptionHandling(exceptions -> exceptions.accessDeniedPage("/accessError"));
-        return http.build();
-    }
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                http.headers(headersConfigurer -> headersConfigurer
+                                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+                http.authorizeHttpRequests(
+                                auth -> auth
+                                                .requestMatchers("/").permitAll()
+                                                .requestMatchers("/new/**").hasAnyRole("USER", "ADMIN")
+                                                .requestMatchers("/edit/**", "/delete/**").hasRole("ADMIN")
+                                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                                                .permitAll()
+                                                .requestMatchers("/h2-console/**").hasRole("ADMIN")
+                                                .anyRequest().authenticated())
+                                .formLogin(formLogin -> formLogin
+                                                .defaultSuccessUrl("/", true)
+                                                .permitAll())
+                                .logout(logout -> logout
+                                                .permitAll())
+                                .httpBasic(Customizer.withDefaults()); // import org.springframework.security.config
+                http.exceptionHandling(exceptions -> exceptions.accessDeniedPage("/accessError"));
+                return http.build();
+        }
 }

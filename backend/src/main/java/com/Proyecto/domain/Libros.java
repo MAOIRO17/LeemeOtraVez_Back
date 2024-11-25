@@ -16,7 +16,7 @@ public class Libros {
     private Long id;
     private String titulo;
     private String autor;
-    private String categoria;
+    private Categoria categoria;
     private String idioma;
     private float precio;
 

@@ -11,6 +11,7 @@ import com.Proyecto.Services.CompraService;
 import com.Proyecto.Services.LibrosService;
 import com.Proyecto.Services.UsuarioService;
 import com.Proyecto.Services.VentaService;
+import com.Proyecto.domain.Categoria;
 import com.Proyecto.domain.Compra;
 import com.Proyecto.domain.Libros;
 import com.Proyecto.domain.Usuario;
@@ -26,7 +27,8 @@ public class Application {
     @Bean
     CommandLineRunner initUsuarioData(UsuarioService usuarioService) {
         return args -> {
-            Usuario usuario1 = new Usuario(49333225L, "Carlos", "carlos@gmail.com", "654109671", "av.Carlos III", null, null);
+            Usuario usuario1 = new Usuario(49333225L, "Carlos", "carlos@gmail.com", "654109671", "av.Carlos III", null,
+                    null);
             Usuario usuario2 = new Usuario(49333195L, "Ana", "ana@gmail.com", "654141031", "av. Nacional", null, null);
             usuarioService.añadir(usuario1);
             usuarioService.añadir(usuario2);
@@ -41,8 +43,10 @@ public class Application {
             compraService.añadir(compra1);
             compraService.añadir(compra2);
 
-            Libros libro1 = new Libros(3L, "Lolita", "Vladimir Nabokov", "novela", "castellano", 14.95f, compra1);
-            Libros libro2 = new Libros(5L, "La metamorfosis", "Frank Kafka", "novela corta", "castellano", 9.99f, compra2);
+            Libros libro1 = new Libros(3L, "Lolita", "Vladimir Nabokov", Categoria.NOVELA, "castellano", 14.95f,
+                    compra1);
+            Libros libro2 = new Libros(5L, "La metamorfosis", "Frank Kafka", Categoria.FANTASÍA, "castellano", 9.99f,
+                    compra2);
             librosService.añadir(libro1);
             librosService.añadir(libro2);
         };
@@ -59,7 +63,8 @@ public class Application {
     }
 
     @Bean
-    CommandLineRunner initVentaData(VentaService ventaService, UsuarioService usuarioService, LibrosService librosService) {
+    CommandLineRunner initVentaData(VentaService ventaService, UsuarioService usuarioService,
+            LibrosService librosService) {
         return args -> {
             Venta venta1 = new Venta(null, LocalDateTime.of(2024, 6, 1, 21, 47), 100f, null, null);
             Venta venta2 = new Venta(null, LocalDateTime.of(2024, 2, 12, 13, 20), 35f, null, null);
